@@ -62,10 +62,16 @@ export function ScheduleForm({ open, onClose, onSave, editSchedule }: ScheduleFo
   });
 
   const onSubmit = (values: ScheduleFormValues) => {
-    onSave({
+    // Ensure all required fields from the Schedule interface are provided
+    const scheduleData: Schedule = {
       id: editSchedule?.id || `schedule-${Date.now()}`,
-      ...values,
-    });
+      name: values.name,
+      days: values.days,
+      startTime: values.startTime,
+      endTime: values.endTime,
+    };
+    
+    onSave(scheduleData);
     onClose();
   };
 
