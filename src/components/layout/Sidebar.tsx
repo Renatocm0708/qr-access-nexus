@@ -19,10 +19,15 @@ type NavItemProps = {
   to: string;
   icon: React.ReactNode;
   label: string;
-  isSidebarOpen: boolean;
+  isOpen: boolean;
 };
 
-const NavItem = ({ to, icon, label, isSidebarOpen }: NavItemProps) => {
+type SidebarProps = {
+  isOpen: boolean;
+  onToggle: () => void;
+};
+
+const NavItem = ({ to, icon, label, isOpen }: NavItemProps) => {
   return (
     <NavLink
       to={to}
@@ -36,33 +41,21 @@ const NavItem = ({ to, icon, label, isSidebarOpen }: NavItemProps) => {
       }
     >
       {icon}
-      {isSidebarOpen && <span>{label}</span>}
+      {isOpen && <span>{label}</span>}
     </NavLink>
   );
 };
 
-export function Sidebar() {
-  const [isSidebarOpen, setSidebarOpen] = React.useState(true);
+export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const isMobile = useIsMobile();
-
-  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-
-  // Auto-collapse on mobile
-  React.useEffect(() => {
-    if (isMobile) {
-      setSidebarOpen(false);
-    } else {
-      setSidebarOpen(true);
-    }
-  }, [isMobile]);
 
   return (
     <>
       {/* Mobile overlay */}
-      {isMobile && isSidebarOpen && (
+      {isMobile && isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30"
-          onClick={toggleSidebar}
+          onClick={onToggle}
         />
       )}
 
@@ -70,13 +63,12 @@ export function Sidebar() {
       <aside
         className={cn(
           "bg-sidebar fixed h-full z-40 top-0 left-0 flex flex-col border-r border-sidebar-border transition-all duration-300",
-          isSidebarOpen ? (isMobile ? "w-64" : "w-64") : "w-16",
-          isMobile && !isSidebarOpen && "-translate-x-full"
+          isOpen ? "w-64" : isMobile ? "-translate-x-full" : "w-16",
         )}
       >
         {/* Header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
-          {isSidebarOpen ? (
+          {isOpen ? (
             <h1 className="text-lg font-semibold text-white">Access Control</h1>
           ) : (
             <span className="mx-auto text-lg font-bold text-white">AC</span>
@@ -85,10 +77,10 @@ export function Sidebar() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={toggleSidebar}
+            onClick={onToggle}
             className="text-sidebar-foreground hover:bg-sidebar-accent"
           >
-            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
         </div>
 
@@ -98,43 +90,43 @@ export function Sidebar() {
             to="/"
             icon={<LayoutDashboard size={20} />}
             label="Dashboard"
-            isSidebarOpen={isSidebarOpen}
+            isOpen={isOpen}
           />
           <NavItem
             to="/people"
             icon={<Users size={20} />}
             label="Personas"
-            isSidebarOpen={isSidebarOpen}
+            isOpen={isOpen}
           />
           <NavItem
             to="/qrcodes"
             icon={<QrCode size={20} />}
             label="Códigos QR"
-            isSidebarOpen={isSidebarOpen}
+            isOpen={isOpen}
           />
           <NavItem
             to="/schedules"
             icon={<Calendar size={20} />}
             label="Horarios"
-            isSidebarOpen={isSidebarOpen}
+            isOpen={isOpen}
           />
           <NavItem
             to="/access-logs"
             icon={<ListFilter size={20} />}
             label="Registros de acceso"
-            isSidebarOpen={isSidebarOpen}
+            isOpen={isOpen}
           />
           <NavItem
             to="/settings"
             icon={<Settings size={20} />}
             label="Configuración"
-            isSidebarOpen={isSidebarOpen}
+            isOpen={isOpen}
           />
         </nav>
 
         {/* Footer */}
         <div className="mt-auto p-3 border-t border-sidebar-border">
-          {isSidebarOpen && (
+          {isOpen && (
             <div className="text-xs text-sidebar-foreground/70">
               <p>Sistema de control de acceso</p>
               <p>v1.0.0</p>
@@ -143,12 +135,12 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile toggle button */}
-      {isMobile && !isSidebarOpen && (
+      {/* Mobile floating button when sidebar is closed */}
+      {isMobile && !isOpen && (
         <Button
           variant="default"
           size="icon"
-          onClick={toggleSidebar}
+          onClick={onToggle}
           className="fixed bottom-4 right-4 z-50 rounded-full shadow-lg"
         >
           <Menu />

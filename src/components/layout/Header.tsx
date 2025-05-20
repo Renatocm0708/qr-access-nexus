@@ -1,27 +1,40 @@
 
 import React from 'react';
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type HeaderProps = {
   title: string;
+  onMenuClick?: () => void;
 };
 
-export function Header({ title }: HeaderProps) {
+export function Header({ title, onMenuClick }: HeaderProps) {
+  const isMobile = useIsMobile();
+  
   return (
-    <header className="bg-background border-b h-16 flex items-center justify-between px-6">
-      <h1 className="text-xl font-semibold">{title}</h1>
+    <header className="bg-background border-b h-16 flex items-center justify-between px-4 md:px-6">
+      <div className="flex items-center gap-2">
+        {isMobile && (
+          <Button variant="ghost" size="icon" onClick={onMenuClick} className="mr-2">
+            <Menu className="h-5 w-5" />
+          </Button>
+        )}
+        <h1 className="text-xl font-semibold truncate">{title}</h1>
+      </div>
 
-      <div className="flex items-center gap-4">
-        <div className="relative hidden md:block">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Buscar..."
-            className="w-64 pl-8"
-          />
-        </div>
+      <div className="flex items-center gap-2 md:gap-4">
+        {!isMobile && (
+          <div className="relative hidden md:block">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Buscar..."
+              className="w-64 pl-8"
+            />
+          </div>
+        )}
 
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
