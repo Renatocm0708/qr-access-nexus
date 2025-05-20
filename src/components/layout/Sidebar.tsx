@@ -69,9 +69,21 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         {/* Header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
           {isOpen ? (
-            <h1 className="text-lg font-semibold text-white">Access Control</h1>
+            <div className="flex items-center">
+              <img 
+                src="/lovable-uploads/53ccbf5e-4d11-48e2-b48b-3af78acbb3f5.png" 
+                alt="SafeLand Logo" 
+                className="h-10 mr-2" 
+              />
+            </div>
           ) : (
-            <span className="mx-auto text-lg font-bold text-white">AC</span>
+            <div className="mx-auto">
+              <img 
+                src="/lovable-uploads/53ccbf5e-4d11-48e2-b48b-3af78acbb3f5.png" 
+                alt="SafeLand Logo" 
+                className="h-8" 
+              />
+            </div>
           )}
 
           <Button
